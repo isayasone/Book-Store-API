@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id          String      @id @default(uuid())
+  title       String      @unique()
+  writer      String
+  cover_image String      @default("https://images-na.ssl-images-amazon.com/images/I/51Ga5GuElyL._AC_SX184_.jpg")
+  point       Float
+  tag         Book_Tag[]
+  status      Book_Status @default(AVAILABLE)
+  order_id    String?
+  order       Order?     @relation(fields: [order_id], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+}
+
+model User {
+  id         String    @id @default(uuid())
+  frist_name String
+  last_name  String
+  email      String    @unique
+  role      User_Role  @default(CUSTOMER)
+  password   String
+  point      Float     @default(100)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+  Order     Order[]
+}
+
+model Order {
+  id          String       @id @default(uuid())
+  name        String
+  books       Book[]
+  status      Order_status
+  customer_id String
+  customer     User    @relation(fields: [customer_id], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+}
+
+enum Book_Status {
+  AVAILABLE
+  ORDERED
+  SOLD
+}
+
+enum Book_Tag {
+  fiction
+  non_fiction
+  essay
+  science
+}
+
+enum Order_status {
+  CANCELED
+  PENDING
+  DELIVERED
+}
+
+
+enum User_Role {
+  ADMIN
+  CUSTOMER
+}
