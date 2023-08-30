@@ -5,7 +5,7 @@ export enum User_Role {
 export enum Book_Status {
   AVAILABLE = 'AVAILABLE',
   ORDERED = 'ORDERED',
-  SOLD = '  SOLD',
+  SOLD = 'SOLD',
 }
 
 export enum Book_Tag {
