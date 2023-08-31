@@ -35,7 +35,7 @@ export class UserService {
         },
       });
 
-      return newUser;
+      return  UserDto.mapUserToUserDto(newUser);
     } catch (error) {
       if (error.code === 'P2002') {
         throw new ForbiddenException('Already registered email');

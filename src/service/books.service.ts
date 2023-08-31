@@ -6,6 +6,8 @@ import {
 import { BooksRepository } from '../repository/books.repository';
 import { BookDto } from '../utilities/dto/book.dto';
 import { CreateBookDto } from '../utilities/dto/create.book.dto';
+import { Book_Status } from 'src/utilities';
+import { SoldBookDto } from 'src/utilities/dto/sold.book.dto';
 
 @Injectable()
 export class BooksService {
@@ -62,4 +64,24 @@ export class BooksService {
       throw new InternalServerErrorException(err.message);
     }
   }
+   async getSoldBook()
+   {
+    try{
+      const books= await this.repository.getBooksByStatus(Book_Status.SOLD);
+      return  books.map(book=> SoldBookDto.mapSoldBookDto(book)) 
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+   }
+
+   async getUserBoughtBook(userId:string)
+   {
+    try{
+    const book = await this.repository.getBook({ where: {status:Book_Status.SOLD,order:{ custmor_id:userId }  } });
+    return SoldBookDto.mapSoldBookDto(book);
+   } catch (err) {
+    throw new InternalServerErrorException(err.message);
+  }
+
+   }
 }

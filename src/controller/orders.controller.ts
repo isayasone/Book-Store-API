@@ -56,4 +56,5 @@ export class OrdersController {
     if (!isUUID(id)) return new BadRequestException();
     return await this.ordersService.deliverOrder(id);
   }
+
 }

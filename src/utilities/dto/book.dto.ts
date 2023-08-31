@@ -22,8 +22,6 @@ export class BookDto {
   @ApiProperty()
   status: Book_Status;
 
-  @ApiProperty()
-  createdAt: Date;
 
   static mapToBookDto(book: Book) {
     const bookDto = new BookDto();

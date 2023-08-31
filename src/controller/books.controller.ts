@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -14,6 +15,8 @@ import { isNotEmpty, isUUID } from 'class-validator';
 import { BooksService } from '../service/books.service';
 import { BookDto } from '../utilities/dto/book.dto';
 import { CreateBookDto } from '../utilities/dto/create.book.dto';
+import { AuthUser, JwtAuthGuard } from 'src/utilities';
+import { SoldBookDto } from 'src/utilities/dto/sold.book.dto';
 
 // @ApiBearerAuth()
 @ApiTags('Book')
@@ -30,6 +33,39 @@ export class BooksController {
   async getBooks() {
     return this.booksService.getBooks();
   }
+
+  
+  @ApiResponse({
+    description:`User Bought Books List`,
+    type: [SoldBookDto],
+    status: 200,
+  })
+
+  @Get(`/user-bought/`)
+  @UseGuards(JwtAuthGuard)
+  async getUserBoughtBook( @AuthUser() user) {
+    return await this.booksService.getUserBoughtBook(user.id);
+  }
+
+
+  
+  @ApiResponse({
+    description:`Sold Books List`,
+    type: [SoldBookDto],
+    status: 200,
+  })
+
+  @Get(`/sold/`)
+  async getSoldBook() {
+    return await this.booksService.getSoldBook();
+  }
+
+
+  @ApiResponse({
+    description:`Get Book  by title`,
+    type: BookDto,
+    status: 200,
+  })
 
   @Get(`/by-title/:title`)
   async getBookByTitle(@Param('title') title) {

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Book, Prisma } from '@prisma/client';
+import { Book_Status } from 'src/utilities';
 import { PrismaService } from 'src/utilities/prisma.service';
 
 @Injectable()
@@ -12,7 +13,8 @@ export class BooksRepository {
   }
 
   async getBook(id): Promise<Book> {
-    return await this.prisma.book.findUnique({ where: { id } });
+    return await this.prisma.book.findUnique({ where: { id },
+      include:{order:{include:{customer:true}}} });
   }
 
   async getBooks(): Promise<Book[]> {
@@ -33,4 +35,10 @@ export class BooksRepository {
     const { where } = params;
     return await this.prisma.book.delete({ where });
   }
+  async getBooksByStatus(bookStatus: Book_Status) {
+    return await this.prisma.book.findMany({
+      where: { status: bookStatus },
+       include:{order:{include:{customer:true}}}
+    });
+  }  
 }
