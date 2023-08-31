@@ -12,14 +12,23 @@
 
 ## Features
 
-- User regisister, login  and get by id and  list
-- Book register ,get list  
+- Register and  list  book
+-  Order book and cancel order 
+-  Get list  of bought books
+-  Change status of order to delivered 
+- Get all pending and cancel order list 
+- Register and  login  user
+- User list  and get by Id
+- Role-based authorization not implempented users (Admin and custmor Role}
+-  API documentations bt swagger
+
+
 
 
 
 
 ## Installation
-
+- For environment variables   use  ".env.example" file
 ```bash
 $ npm install
 $ npx prisma db  push
