@@ -19,8 +19,8 @@
 - Get all pending and cancel order list 
 - Register and  login  user
 - User list  and get by Id
-- Role-based authorization not implempented users (Admin and custmor Role}
--  API documentations bt swagger
+- Role-based authorization not implempented users (Admin and Custmor role}
+-  API documentations by swagger
 
 
 
