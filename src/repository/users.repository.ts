@@ -18,8 +18,4 @@ export class UsersRepository {
   async getUsers(): Promise<User[]> {
     return await this.prisma.user.findMany();
   }
-
-
-
-
 }

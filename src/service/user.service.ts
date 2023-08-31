@@ -6,14 +6,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { User_Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { UsersRepository } from 'src/repository/users.repository';
 import configuration from 'src/utilities/configuration';
 import { LoginDTO } from 'src/utilities/dto/login.dto';
 import { RegisterDto } from 'src/utilities/dto/register.dto';
 import { UserAuthProfileDto } from '../utilities/dto/user.auth.dto';
 import { UserDto } from '../utilities/dto/user.dto';
-import { UsersRepository } from 'src/repository/users.repository';
-import { DefualtAdmin } from 'src/utilities/defualt.admin';
 
 @Injectable()
 export class UserService {
@@ -35,7 +35,7 @@ export class UserService {
         },
       });
 
-      return newUser;
+      return UserDto.mapUserToUserDto(newUser);
     } catch (error) {
       if (error.code === 'P2002') {
         throw new ForbiddenException('Already registered email');
@@ -44,10 +44,15 @@ export class UserService {
     }
   }
 
-  private async signToken(id: string, email: string): Promise<string> {
+  private async signToken(
+    id: string,
+    email: string,
+    role: User_Role,
+  ): Promise<string> {
     const payload = {
       id,
       email,
+      role,
     };
     const token = await this.jwtService.signAsync(payload, {
       secret: configuration.jwt.secret,
@@ -56,17 +61,9 @@ export class UserService {
     return token;
   }
 
-  /**
-   * Authentication  User
-   * @param {LoginDTO}  :user user name and password.
-   * @return {UserAuthProfileDto} userAuthProfileDto if  account found.
-   * @return {UnauthorizedException} if user not found or invalid password or user name
-   * @return {HttpStatus.BAD_REQUEST}  is user status is blocked
-   */
+
   async login({ email, password }: LoginDTO) {
     try {
-      if (email == 'admin@store.com' && password == 'Pass@4321')
-        return DefualtAdmin;
       const account = await this.usersRepository.getUser({ email });
       if (!account)
         throw new UnauthorizedException('Invalid  user eamil or password');
@@ -74,7 +71,11 @@ export class UserService {
       if (!isMatch)
         throw new UnauthorizedException('Invalid  user email or password');
 
-      const access_token = await this.signToken(account.id, account.email);
+      const access_token = await this.signToken(
+        account.id,
+        account.email,
+        account.role,
+      );
 
       const expires = new Date();
       expires.setSeconds(
@@ -90,13 +91,7 @@ export class UserService {
     }
   }
 
-  /**
-   * Returns userAuthProfileDto
-   * find  from account table
-   * @param {string} user_id: user id.
-   * @return {UserAuthProfileDto} userAuthProfileDto if  account found.
-   * @return {null} null if no account found.
-   */
+
   async findOneByUserId(id: string) {
     try {
       const account = await this.usersRepository.getUser({ id });

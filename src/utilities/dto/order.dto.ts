@@ -21,12 +21,14 @@ export class OrderDto {
   @ApiProperty()
   createdAt: Date;
 
-  static mapToOrderDto(order, customer: UserDto) {
+  static mapToOrderDto(order, customer?: UserDto) {
     const orderDto = new OrderDto();
     orderDto.id = order.id;
-    orderDto.customerName = `${customer.frist_name}  ${customer.last_name}`;
+    if (customer) {
+      orderDto.customerName = `${customer.frist_name}  ${customer.last_name}`;
+      orderDto.customerEmail = customer.email;
+    }
     orderDto.createdAt = order.createdAt;
-    orderDto.customerEmail = customer.email;
     orderDto.books = order?.books?.map((book) => BookDto.mapToBookDto(book));
     return orderDto;
   }

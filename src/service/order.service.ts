@@ -13,6 +13,7 @@ import { OrderRepository } from '../repository/orders.repository';
 import { CreateOrderDto } from '../utilities/dto/create.order.dto';
 import { OrderDto } from '../utilities/dto/order.dto';
 import { UserService } from './user.service';
+import { UserOrderDto } from 'src/utilities/dto/user.order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -27,7 +28,7 @@ export class OrdersService {
       //validation
       const books = await Promise.all(
         book_ids.map(async (id: string) => {
-          const book = await this.booksRepository.getBook( id );
+          const book = await this.booksRepository.getBook({ id });
           if (!book) throw new BadRequestException('Book not found');
           if (book.status != Book_Status.AVAILABLE)
             throw new BadRequestException(`Book : ${book.title} not available`);
@@ -100,9 +101,41 @@ export class OrdersService {
     }
   }
 
+  async getPendingOrder() {
+    try {
+      const orders = await this.orderRepository.getOrdersByStatus(
+        Order_status.PENDING,
+      );
+      return orders.map((order) =>
+        OrderDto.mapToOrderDto(order, UserDto.mapUserToUserDto(order.customer)),
+      );
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  async getOrders() {
+    try {
+      return await this.orderRepository.getOrders();
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
+  async getUserOrders(customer_id) {
+    try {
+      const orders = await this.orderRepository.getOrdersWhereClue({
+        customer_id,
+      });
+      return orders.map((order) => UserOrderDto.mapToOrderDto(order));
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
+
   private async checkOrderOnPennding(id) {
     try {
-      const order = await this.orderRepository.getOrder(id );
+      const order = await this.orderRepository.getOrder(id);
       if (!order) throw new NotFoundException('Order Not Found');
       else if (order.status != Order_status.PENDING)
         throw new BadRequestException('Order not on pending');
