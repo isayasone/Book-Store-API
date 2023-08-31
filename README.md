@@ -19,7 +19,7 @@
 - Get all pending and cancel order list (admin)
 - Register and  login for (customer and admin)
 - User list  and get by Id  (Admin)
--
+
 
 
 
