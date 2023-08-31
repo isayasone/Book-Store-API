@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserDto } from 'src/auth/dtos/user.dto';
-import { BookDto } from 'src/books/dto/book.dto';
+import { BookDto } from 'src/utilities/dto/book.dto';
+import { UserDto } from 'src/utilities/dto/user.dto';
 
 export class OrderDto {
   @ApiProperty()

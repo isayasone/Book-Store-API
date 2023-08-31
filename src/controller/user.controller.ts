@@ -7,25 +7,23 @@ import {
   Param,
   Post,
   UnauthorizedException,
-  ValidationPipe,
-  Version
+  ValidationPipe
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { isUUID } from 'class-validator';
-import { RegisterDto } from './dtos';
-import { LoginDTO } from './dtos/login.dto';
-import { UserAuthProfileDto } from './dtos/user.auth.dto';
-import { AuthService } from './services/auth.service';
+import { UserService } from 'src/service/user.service';
+import { RegisterDto } from 'src/utilities/dto/register.dto';
+import { LoginDTO } from '../utilities/dto/login.dto';
+import { UserAuthProfileDto } from '../utilities/dto/user.auth.dto';
 
-@ApiTags('Account')
+@ApiTags('User')
 @Controller('user')
-export class AuthController {
-  constructor(private authService: AuthService) {}
-
+export class UserController {
+  constructor(private userService: UserService) {}
 
   @Post()
   createUser(@Body(ValidationPipe) dto: RegisterDto) {
-    return this.authService.register(dto);
+    return this.userService.register(dto);
   }
 
   @ApiResponse({
@@ -35,24 +33,21 @@ export class AuthController {
   @Post('login')
   public async login(@Body(ValidationPipe) credentials: LoginDTO) {
     try {
-      return await this.authService.login(credentials);
+      return await this.userService.login(credentials);
     } catch (ex) {
       throw new UnauthorizedException();
     }
   }
 
-
-
   @Get()
   async getUsers() {
-    return this.authService.getUsers();
+    return this.userService.getUsers();
   }
 
-  @Version('1')
   @Get(`:id`)
   async getUser(@Param('id') id) {
     if (!isUUID(id)) return new BadRequestException();
-    return await this.authService.findOneByUserId(id);
+    return await this.userService.findOneByUserId(id);
   }
 
 

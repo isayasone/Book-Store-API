@@ -6,20 +6,20 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Book_Status } from '@prisma/client';
-import { UserDto } from 'src/auth/dtos/user.dto';
-import { AuthService } from 'src/auth/services/auth.service';
-import { BooksRepository } from 'src/books/books.repository';
-import { Order_status } from 'src/common';
-import { CreateOrderDto } from './dto/create.order.dto';
-import { OrderDto } from './dto/order.dto';
-import { OrderRepository } from './orders.repository';
+import { BooksRepository } from 'src/repository/books.repository';
+import { Order_status } from 'src/utilities';
+import { UserDto } from 'src/utilities/dto/user.dto';
+import { OrderRepository } from '../repository/orders.repository';
+import { CreateOrderDto } from '../utilities/dto/create.order.dto';
+import { OrderDto } from '../utilities/dto/order.dto';
+import { UserService } from './user.service';
 
 @Injectable()
 export class OrdersService {
   constructor(
     private orderRepository: OrderRepository,
     private booksRepository: BooksRepository,
-    private authService: AuthService,
+    private userService: UserService,
   ) {}
   async orderBooks(dto: CreateOrderDto, userId: string): Promise<OrderDto> {
     try {
@@ -40,7 +40,7 @@ export class OrdersService {
           return a + b;
         }, 0);
 
-      const customer = await this.authService.findOneByUserId(userId);
+      const customer = await this.userService.findOneByUserId(userId);
 
       if (booksPoints > customer.point)
         throw new ForbiddenException(
@@ -62,7 +62,7 @@ export class OrdersService {
   async cancelOrder(orderId: string, userId) {
     try {
       await this.checkOrderOnPennding(orderId);
-      const customer = await this.authService.findOneByUserId(userId);
+      const customer = await this.userService.findOneByUserId(userId);
       const order = await this.orderRepository.cancelOrder(
         orderId,
         userId,

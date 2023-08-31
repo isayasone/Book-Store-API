@@ -3,9 +3,9 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { BooksRepository } from './books.repository';
-import { BookDto } from './dto/book.dto';
-import { CreateBookDto } from './dto/create.book.dto';
+import { BooksRepository } from '../repository/books.repository';
+import { BookDto } from '../utilities/dto/book.dto';
+import { CreateBookDto } from '../utilities/dto/create.book.dto';
 
 @Injectable()
 export class BooksService {
@@ -62,7 +62,4 @@ export class BooksService {
       throw new InternalServerErrorException(err.message);
     }
   }
-
-
-
 }

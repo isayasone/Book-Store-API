@@ -11,9 +11,9 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { isNotEmpty, isUUID } from 'class-validator';
-import { BooksService } from './books.service';
-import { BookDto } from './dto/book.dto';
-import { CreateBookDto } from './dto/create.book.dto';
+import { BooksService } from '../service/books.service';
+import { BookDto } from '../utilities/dto/book.dto';
+import { CreateBookDto } from '../utilities/dto/create.book.dto';
 
 // @ApiBearerAuth()
 @ApiTags('Book')
@@ -32,8 +32,7 @@ export class BooksController {
   }
 
   @Get(`/by-title/:title`)
-  async getBookByTitle(@Param('title') title)
-  {
+  async getBookByTitle(@Param('title') title) {
     if (!isNotEmpty(title)) return new BadRequestException();
     return await this.booksService.getBookByTitle(title);
   }
@@ -54,7 +53,6 @@ export class BooksController {
     type: BookDto,
     status: 201,
   })
-
   @Post()
   async addBook(@Body(ValidationPipe) dto: CreateBookDto) {
     return await this.booksService.createBook(dto);
@@ -65,7 +63,6 @@ export class BooksController {
     type: BookDto,
     status: 201,
   })
-
   @Put(`:id`)
   async updateBook(@Param('id') id, @Body(ValidationPipe) dto: CreateBookDto) {
     if (!isUUID(id)) return new BadRequestException();
@@ -77,7 +74,6 @@ export class BooksController {
     type: BookDto,
     status: 200,
   })
-
   @Delete(`:id`)
   async deleteBook(@Param('id') id) {
     if (!isUUID(id)) return new BadRequestException();

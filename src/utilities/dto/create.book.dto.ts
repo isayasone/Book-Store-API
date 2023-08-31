@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsString, Min } from 'class-validator';
-import { Book_Tag } from 'src/common';
+import { Book_Tag } from 'src/utilities';
 
 export class CreateBookDto {
   @ApiProperty()
