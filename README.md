@@ -12,16 +12,20 @@
 
 ## Features
 
-- Import a HTML file and watch it magically convert to Markdown
-- Drag and drop images (requires your Dropbox account be linked)
-- Import and save files from GitHub, Dropbox, Google Drive and One Drive
-- Drag and drop markdown and HTML files into Dillinger
-- Export documents as Markdown, HTML and PDF
+- Register and  list  book (customer and admin) 
+-  Order book and cancel order (customer)
+-  Get list  of bought books (customer).
+-  Change status of order to delivered ( Admin)
+- Get all pending and cancel order list (admin)
+- Register and  login for (customer and admin)
+- User list  and get by Id  (Admin)
+-
+
 
 
 
 ## Installation
-
+- For environment variables   use  ".env.example" file
 ```bash
 $ npm install
 $ npx prisma db  push
