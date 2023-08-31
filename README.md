@@ -12,13 +12,16 @@
 
 ## Features
 
-- Register and  list  book (customer and admin) 
--  Order book and cancel order (customer)
--  Get list  of bought books (customer).
--  Change status of order to delivered ( Admin)
-- Get all pending and cancel order list (admin)
-- Register and  login for (customer and admin)
-- User list  and get by Id  (Admin)
+- Register and  list  book
+-  Order book and cancel order 
+-  Get list  of bought books
+-  Change status of order to delivered 
+- Get all pending and cancel order list 
+- Register and  login  user
+- User list  and get by Id
+- Role-based authorization not implempented users (Admin and custmor Role}
+-  API documentations bt swagger
+
 
 
 
