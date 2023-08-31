@@ -14,10 +14,12 @@
 
 - Register and  list  book
 -  Order book and cancel order 
--  Get list  of bought books
--  Change status of order to delivered 
-- Get all pending and cancel order list 
-- Register and  login  user
+-  Get list of user bought books
+-  Change status of order pending to delivered 
+- Get all pending and cancel order list
+-  When new customer is created, they get 100 point.
+- Customers can buy books by only points
+- Register and login  user
 - User list  and get by Id
 - Role-based authorization not implempented users (Admin and Custmor role}
 -  API documentations by swagger
