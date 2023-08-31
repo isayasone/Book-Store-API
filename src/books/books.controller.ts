@@ -50,7 +50,7 @@ export class BooksController {
   }
 
   @ApiResponse({
-    description: `Adds Book`,
+    description: `Add Book`,
     type: BookDto,
     status: 201,
   })

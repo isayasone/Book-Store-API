@@ -39,9 +39,9 @@ export class AuthService {
     }
   }
 
-  private async signToken(userId: string, email: string): Promise<string> {
+  private async signToken(id: string, email: string): Promise<string> {
     const payload = {
-      sub: userId,
+      id,
       email,
     };
     const token = await this.jwtService.signAsync(payload, {
