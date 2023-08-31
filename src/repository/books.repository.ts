@@ -12,9 +12,18 @@ export class BooksRepository {
     return await this.prisma.book.create({ data });
   }
 
-  async getBook(id): Promise<Book> {
-    return await this.prisma.book.findUnique({ where: { id },
-      include:{order:{include:{customer:true}}} });
+  async getBook(whereInput: Prisma.BookWhereUniqueInput): Promise<Book> {
+    return await this.prisma.book.findUnique({
+      where: whereInput,
+      include: { order: { include: { customer: true } } },
+    });
+  }
+
+  async getBookQuery(whereInput: Prisma.BookWhereInput): Promise<Book[]> {
+    return await this.prisma.book.findMany({
+      where: whereInput,
+      include: { order: { include: { customer: true } } },
+    });
   }
 
   async getBooks(): Promise<Book[]> {
@@ -38,7 +47,7 @@ export class BooksRepository {
   async getBooksByStatus(bookStatus: Book_Status) {
     return await this.prisma.book.findMany({
       where: { status: bookStatus },
-       include:{order:{include:{customer:true}}}
+      include: { order: { include: { customer: true } } },
     });
-  }  
+  }
 }

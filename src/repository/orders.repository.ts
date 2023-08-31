@@ -43,7 +43,7 @@ export class OrderRepository {
         include: { books: true, customer: true },
       });
       const { books, point } = order;
-      await Promise.all(
+      const updatedBooks = await Promise.all(
         books.map(async (book) => {
           return await tx.book.update({
             where: { id: book.id },
@@ -58,7 +58,7 @@ export class OrderRepository {
         where: { id: customer_id },
         data: { point: returnPoint },
       });
-      return order;
+      return { ...order, books: updatedBooks };
     });
   }
 
@@ -94,6 +94,13 @@ export class OrderRepository {
   async getOrder(id): Promise<Order> {
     return await this.prisma.order.findUnique({
       where: { id },
+      include: { books: true },
+    });
+  }
+
+  async getOrdersWhereClue(query): Promise<Order[]> {
+    return await this.prisma.order.findMany({
+      where: query,
       include: { books: true },
     });
   }

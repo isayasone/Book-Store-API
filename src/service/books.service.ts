@@ -58,30 +58,37 @@ export class BooksService {
 
   async getBookByTitle(title) {
     try {
-      const book = await this.repository.getBook({ where: { title } });
+      const book = await this.repository.getBook({ title });
       return BookDto.mapToBookDto(book);
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
   }
-   async getSoldBook()
-   {
-    try{
-      const books= await this.repository.getBooksByStatus(Book_Status.SOLD);
-      return  books.map(book=> SoldBookDto.mapSoldBookDto(book)) 
+  async getSoldBook() {
+    try {
+      const books = await this.repository.getBooksByStatus(Book_Status.SOLD);
+      return books.map((book) => SoldBookDto.mapSoldBookDto(book));
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
-   }
-
-   async getUserBoughtBook(userId:string)
-   {
-    try{
-    const book = await this.repository.getBook({ where: {status:Book_Status.SOLD,order:{ custmor_id:userId }  } });
-    return SoldBookDto.mapSoldBookDto(book);
-   } catch (err) {
-    throw new InternalServerErrorException(err.message);
   }
 
-   }
+  async getUserBoughtBook(customer_id) {
+    try {
+      const books = await this.repository.getBookQuery({
+        AND: [
+          { status: Book_Status.SOLD },
+          {
+            order: {
+              customer_id,
+            },
+          },
+        ],
+      });
+
+      return books.map((book) => BookDto.mapToBookDto(book));
+    } catch (err) {
+      throw new InternalServerErrorException(err.message);
+    }
+  }
 }
