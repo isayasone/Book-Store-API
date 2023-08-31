@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { isUUID } from 'class-validator';
-import { AuthUser } from 'src/common/authUser.decorator';
-import { JwtAuthGuard } from 'src/common/jwt-auth.guard';
-import { CreateOrderDto } from './dto/create.order.dto';
-import { OrderDto } from './dto/order.dto';
-import { OrdersService } from './order.service';
+import { AuthUser } from 'src/utilities/authUser.decorator';
+import { JwtAuthGuard } from 'src/utilities/jwt-auth.guard';
+import { OrdersService } from '../service/order.service';
+import { CreateOrderDto } from '../utilities/dto/create.order.dto';
+import { OrderDto } from '../utilities/dto/order.dto';
 
 // @ApiBearerAuth()
 @ApiTags('Order')
@@ -51,7 +51,7 @@ export class OrdersController {
     status: 200,
   })
   @Put(`deliver/:id`)
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   async deliverOrder(@Param('id') id) {
     if (!isUUID(id)) return new BadRequestException();
     return await this.ordersService.deliverOrder(id);

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Book } from '@prisma/client';
-import { Book_Status, Book_Tag } from 'src/common';
+import { Book_Status, Book_Tag } from 'src/utilities';
 
 export class BookDto {
   @ApiProperty()

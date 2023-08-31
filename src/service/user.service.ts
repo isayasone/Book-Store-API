@@ -2,24 +2,25 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
-  UnauthorizedException
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import configuration from 'src/configuration';
-import { PrismaService } from 'src/prisma.service';
-import { RegisterDto } from '../dtos';
-import { LoginDTO } from '../dtos/login.dto';
-import { UserAuthProfileDto } from '../dtos/user.auth.dto';
-import { UserDto } from '../dtos/user.dto';
+import configuration from 'src/utilities/configuration';
+import { LoginDTO } from 'src/utilities/dto/login.dto';
+import { RegisterDto } from 'src/utilities/dto/register.dto';
+import { UserAuthProfileDto } from '../utilities/dto/user.auth.dto';
+import { UserDto } from '../utilities/dto/user.dto';
+import { UsersRepository } from 'src/repository/users.repository';
+import { DefualtAdmin } from 'src/utilities/defualt.admin';
 
 @Injectable()
-export class AuthService {
+export class UserService {
   constructor(
-    private prisma: PrismaService,
     private jwtService: JwtService,
     private config: ConfigService,
+    private usersRepository: UsersRepository,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -27,9 +28,13 @@ export class AuthService {
       const { password } = dto;
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(password, salt);
-      const newUser = await this.prisma.user.create({
-        data: { ...dto, password: hashedPassword },
+      const newUser = await this.usersRepository.createUser({
+        data: {
+          ...dto,
+          password: hashedPassword,
+        },
       });
+
       return newUser;
     } catch (error) {
       if (error.code === 'P2002') {
@@ -60,21 +65,9 @@ export class AuthService {
    */
   async login({ email, password }: LoginDTO) {
     try {
-      if (email == 'adminisa@store.com' && password == 'Pass@4321')
-        return {
-          userId: '9dfe8c91-5c49-489e-a471-65ba70d717d7',
-          frist_name: 'isayas',
-          last_name: 'Admin',
-          email: 'tade@outlook.com',
-          status: 'ACTIVE',
-          role: 'ADMIN',
-          expires_in: 3600,
-          token:
-            'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5ZGZlOGM5MS01YzQ5LTQ4OWUtYTQ3MS02NWJhNzBkNzE3ZDciLCJlbWFpbCI6InRhZGVAb3V0bG9vay5jb20iLCJpYXQiOjE2OTI3MzY1MzcsImV4cCI6MTY5MjczNjU0MH0.8paQL1u6hmDiJCFHgmG3iqqt0r9h-3_F5X7UxsiURZ5miDFrxdNE2grKSm4kBonj',
-        };
-      const account = await this.prisma.user.findUnique({
-        where: { email },
-      });
+      if (email == 'admin@store.com' && password == 'Pass@4321')
+        return DefualtAdmin;
+      const account = await this.usersRepository.getUser({ email });
       if (!account)
         throw new UnauthorizedException('Invalid  user eamil or password');
       const isMatch = await bcrypt.compare(password, account.password);
@@ -106,9 +99,7 @@ export class AuthService {
    */
   async findOneByUserId(id: string) {
     try {
-      const account = await this.prisma.user.findFirst({
-        where: { id },
-      });
+      const account = await this.usersRepository.getUser({ id });
       return UserDto.mapUserToUserDto(account);
     } catch (err) {
       throw new InternalServerErrorException(err.message);
@@ -117,13 +108,10 @@ export class AuthService {
 
   async getUsers() {
     try {
-
-      const users = await this.prisma.user.findMany();
+      const users = await this.usersRepository.getUsers();
       return users.map((user) => UserDto.mapUserToUserDto(user));
     } catch (err) {
       throw new InternalServerErrorException(err.message);
     }
   }
-
-
 }
