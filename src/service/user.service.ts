@@ -14,6 +14,7 @@ import { UserAuthProfileDto } from '../utilities/dto/user.auth.dto';
 import { UserDto } from '../utilities/dto/user.dto';
 import { UsersRepository } from 'src/repository/users.repository';
 import { DefualtAdmin } from 'src/utilities/defualt.admin';
+import { User_Role } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -44,10 +45,11 @@ export class UserService {
     }
   }
 
-  private async signToken(id: string, email: string): Promise<string> {
+  private async signToken(id: string, email: string,role:User_Role): Promise<string> {
     const payload = {
       id,
       email,
+      role
     };
     const token = await this.jwtService.signAsync(payload, {
       secret: configuration.jwt.secret,
@@ -74,7 +76,7 @@ export class UserService {
       if (!isMatch)
         throw new UnauthorizedException('Invalid  user email or password');
 
-      const access_token = await this.signToken(account.id, account.email);
+      const access_token = await this.signToken(account.id, account.email ,account.role);
 
       const expires = new Date();
       expires.setSeconds(

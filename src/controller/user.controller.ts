@@ -7,17 +7,21 @@ import {
   Param,
   Post,
   UnauthorizedException,
+  UseGuards,
   ValidationPipe
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { isUUID } from 'class-validator';
 import { UserService } from 'src/service/user.service';
 import { RegisterDto } from 'src/utilities/dto/register.dto';
 import { LoginDTO } from '../utilities/dto/login.dto';
 import { UserAuthProfileDto } from '../utilities/dto/user.auth.dto';
 import { UserDto } from 'src/utilities/dto/user.dto';
+import { JwtAuthGuard, User_Role } from 'src/utilities';
+import { Roles } from 'src/utilities/roles.decorator';
 
 @ApiTags('User')
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
@@ -51,17 +55,21 @@ export class UserController {
   })
 
   @Get()
+  @Roles(User_Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   async getUsers() {
     return this.userService.getUsers();
   }
 
   @ApiResponse({
-    description: `Get User by  id`,
+    description: `Get User by id`,
     type: UserDto,
     status: 200,
   })
 
   @Get(`:id`)
+  @Roles(User_Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
   async getUser(@Param('id') id) {
     if (!isUUID(id)) return new BadRequestException();
     return await this.userService.findOneByUserId(id);

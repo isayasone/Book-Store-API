@@ -10,7 +10,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { isNotEmpty, isUUID } from 'class-validator';
 import { BooksService } from '../service/books.service';
 import { BookDto } from '../utilities/dto/book.dto';
@@ -20,6 +20,7 @@ import { SoldBookDto } from 'src/utilities/dto/sold.book.dto';
 
 // @ApiBearerAuth()
 @ApiTags('Book')
+@ApiBearerAuth()
 @Controller('book')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}

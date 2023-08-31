@@ -8,7 +8,7 @@ import {
   UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { isUUID } from 'class-validator';
 import { AuthUser } from 'src/utilities/authUser.decorator';
 import { JwtAuthGuard } from 'src/utilities/jwt-auth.guard';
@@ -18,6 +18,7 @@ import { OrderDto } from '../utilities/dto/order.dto';
 
 // @ApiBearerAuth()
 @ApiTags('Order')
+@ApiBearerAuth()
 @Controller('order')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
