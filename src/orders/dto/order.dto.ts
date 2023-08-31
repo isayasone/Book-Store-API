@@ -7,13 +7,13 @@ export class OrderDto {
   id: string;
 
   @ApiProperty()
-  customerName: String;
+  customerName: string;
 
   @ApiProperty()
-  customerEmail: String;
+  customerEmail: string;
 
   @ApiProperty()
-  books:BookDto[];
+  books: BookDto[];
 
   @ApiProperty()
   Totalpoint: number;
@@ -21,13 +21,13 @@ export class OrderDto {
   @ApiProperty()
   createdAt: Date;
 
-  static mapToOrderDto(order, customer:UserDto) {
-   const orderDto= new   OrderDto();
-   orderDto.id=order.id;
-   orderDto.customerName=`${ customer.frist_name}  ${customer.last_name}`
-   orderDto.createdAt=order.createdAt;
-   orderDto.customerEmail=customer.email;
-   orderDto.books=order?.books?.map(book=>BookDto.mapToBookDto(book));
-   return orderDto;
+  static mapToOrderDto(order, customer: UserDto) {
+    const orderDto = new OrderDto();
+    orderDto.id = order.id;
+    orderDto.customerName = `${customer.frist_name}  ${customer.last_name}`;
+    orderDto.createdAt = order.createdAt;
+    orderDto.customerEmail = customer.email;
+    orderDto.books = order?.books?.map((book) => BookDto.mapToBookDto(book));
+    return orderDto;
   }
 }

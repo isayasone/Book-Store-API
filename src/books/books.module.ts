@@ -8,6 +8,6 @@ import { BooksService } from './books.service';
   imports: [],
   controllers: [BooksController],
   providers: [BooksService, BooksRepository, PrismaService],
-  exports:[BooksRepository]
+  exports: [BooksRepository],
 })
 export class BooksModule {}
